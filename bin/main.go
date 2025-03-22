@@ -13,7 +13,7 @@ import (
 var (
 	app = kingpin.New("Sigillum", "A cryptor for your shellcode.")
 
-	payload_command  = app.Flag("payload", "Provide the shellcode by text.").Short('t').Required().String()
+	payload_command  = app.Flag("payload", "Provide the shellcode by text.").Short('p').Required().String()
 	seal_command     = app.Flag("seal", "The type of encryption / obfuscation (e.g., aes, rc4, etc.)").Short('s').Default("RC4").String()
 	key_command      = app.Flag("key", "The key to decrypt the shellcode.").Short('k').Required().String()
 	language_command = app.Flag("language", "The outputted programming language.").Short('l').Default("C").String()
