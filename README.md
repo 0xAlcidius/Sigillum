@@ -1,0 +1,2 @@
+# Sigillum
+Sigillum is a tool created to obfuscate / encrypt shellcode. By obfuscating / encrypting shellcode, the tool willm return both the obfuscated / encrypted shellcode, as will it provide the decryption function to use in your code. 
