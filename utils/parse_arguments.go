@@ -8,22 +8,22 @@ func ParseKey(key string) ([]byte, error) {
 	return []byte(key), nil
 }
 
-func ParseFile(path string) ([]byte, error) {
-	file, err := os.Open(path)
+func ParsePayload(payload string) ([]byte, bool, error) {
+	file, err := os.Open(payload)
 	if err != nil {
-		return nil, err
+		return []byte(payload), false, err
 	}
 
 	info, err := file.Stat()
 	if err != nil {
-		return nil, err
+		return nil, true, err
 	}
 
 	bytes := make([]byte, info.Size())
 
 	file.Read(bytes)
 
-	return bytes, nil
+	return bytes, true, nil
 }
 
 func ParseText(text string) ([]byte, error) {

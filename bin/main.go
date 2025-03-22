@@ -13,11 +13,10 @@ import (
 var (
 	app = kingpin.New("Sigillum", "A cryptor for your shellcode.")
 
-	path_command     = app.Flag("path", "Provide a path to your file.").Short('f').String()
-	text_command     = app.Flag("text", "Provide the shellcode by text.").Short('t').String()
-	seal_command     = app.Flag("seal", "The type of encryption / obfuscation (e.g., aes, rc4, etc.)").Short('s').Required().String()
+	payload_command  = app.Flag("payload", "Provide the shellcode by text.").Short('t').Required().String()
+	seal_command     = app.Flag("seal", "The type of encryption / obfuscation (e.g., aes, rc4, etc.)").Short('s').Default("RC4").String()
 	key_command      = app.Flag("key", "The key to decrypt the shellcode.").Short('k').Required().String()
-	language_command = app.Flag("language", "The outputted programming language.").Short('l').Required().String()
+	language_command = app.Flag("language", "The outputted programming language.").Short('l').Default("C").String()
 	output_command   = app.Flag("output", "Path to save the file.").Short('o').String()
 )
 
@@ -29,25 +28,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	if *text_command != "" && *path_command != "" {
-		log.Print("Please choose between a file or textual shellcode.")
+	shellcode, isFile, err := utils.ParsePayload(*payload_command)
+	if err != nil && isFile {
+		log.Print("Could not find file: , error: ", *payload_command, err)
 		os.Exit(1)
-	}
-
-	if *path_command != "" {
-		shellcode, err = utils.ParseFile(*path_command)
-		if err != nil {
-			log.Print("Could not find file: , error: ", *path_command, err)
-			os.Exit(1)
-		}
-	}
-
-	if *text_command != "" {
-		shellcode, err = utils.ParseText(*text_command)
-		if err != nil {
-			log.Print("Could not parse text: , error: ", *text_command, err)
-			os.Exit(1)
-		}
 	}
 
 	key, err := utils.ParseKey(*key_command)
