@@ -15,7 +15,7 @@ var (
 	app = kingpin.New("Sigillum", "A cryptor for your payload.")
 
 	payload_command  = app.Flag("payload", "Provide the payload by text.").Short('p').Required().String()
-	seal_command     = app.Flag("seal", "The type of encryption / obfuscation (e.g., aes, rc4, etc.)").Short('s').Default("RC4").String()
+	seal_command     = app.Flag("seal", "The type of encryption / obfuscation (e.g., xor, rc4, etc.)").Short('s').Default("RC4").String()
 	key_command      = app.Flag("key", "The key to decrypt the payload.").Short('k').Required().String()
 	language_command = app.Flag("language", "The outputted programming language.").Short('l').Default("C").String()
 	output_command   = app.Flag("output", "Path to save the file.").Short('o').String()
