@@ -8,40 +8,21 @@ import (
 	"sigillum/utils"
 )
 
-/*
-Options for exporting:
-  - key: 		The key provided by the user used for sealing;
-  - cipertext:	The sealed payload derived from the unsealed payload;
-  - seal:		The algorithm used for sealing;
-  - outputFile:	The filename of the file and the file extension;
-  - exportName:	The name the deseal function will use to save the output in.
-*/
-type ExportCOptions struct {
-	key        []byte
-	cipertext  []byte
-	seal       string
-	outputFile string
-	exportName string
-}
+func ExportC(options ExportOptions) error {
+	var file *os.File = nil
+	var err error = nil
 
-func CreateExportCOptions(key []byte, cipertext []byte, seal string, outputFile string, exportName string) ExportCOptions {
-	return ExportCOptions{key: key, cipertext: cipertext, seal: seal, outputFile: outputFile, exportName: exportName}
-}
-
-func ExportC(options ExportCOptions) error {
-	file, err := os.Create(options.outputFile)
-	if err != nil {
-		return err
+	if options.outputFile != "" {
+		file, err = os.Create(options.outputFile)
+		if err != nil {
+			return err
+		}
 	}
 
 	return parseC(options, file)
 }
 
-func PrintC(options ExportCOptions) error {
-	return parseC(options, nil)
-}
-
-func parseC(options ExportCOptions, file *os.File) error {
+func parseC(options ExportOptions, file *os.File) error {
 	flag := file == nil
 
 	filePath, err := utils.GetPath(options.seal, "C")

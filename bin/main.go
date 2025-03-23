@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 	"os"
-	"sigillum/constants"
 	"sigillum/export"
+	"sigillum/support"
 	"sigillum/utils"
-	"slices"
+	"strings"
 
 	"github.com/alecthomas/kingpin/v2"
 )
@@ -42,27 +42,31 @@ func main() {
 		os.Exit(1)
 	}
 
-	if !slices.Contains(constants.SupportedLanguages, *language_command) {
-		log.Printf("Programming language: %s not supported", *language_command)
+	encrypt, found := support.SupportedSeals[strings.ToUpper(*seal_command)]
+
+	if !found {
+		log.Printf("Sealing algorithm not supported.")
 		os.Exit(1)
 	}
 
-	if encrypt, found := constants.SupportedSeals[*seal_command]; found {
-		cipertext, err := encrypt(key, payload)
-		if err != nil {
-			log.Println("Failed to encrypt payload. Error: ", err)
-			os.Exit(1)
-		}
+	cipertext, err := encrypt(key, payload)
+	if err != nil {
+		log.Println("Failed to encrypt payload. Error: ", err)
+		os.Exit(1)
+	}
 
-		switch *language_command {
-		case "C":
-			options := export.CreateExportCOptions(key, cipertext, *seal_command, *output_command, *filename_command)
-			if *output_command != "" {
-				export.ExportC(options)
-			} else {
-				export.PrintC(options)
-			}
-		}
+	exportCipertext, found := support.SupportedLanguages[strings.ToUpper(*language_command)]
+
+	if !found {
+		log.Printf("Programming language not supported.")
+		os.Exit(1)
+	}
+
+	options := export.CreateExportOptions(key, cipertext, *seal_command, *language_command, *output_command, *filename_command)
+	err = exportCipertext(options)
+	if err != nil {
+		log.Printf("Failed to export cipertext. Error: %s", err)
+		os.Exit(1)
 	}
 
 	os.Exit(0)
