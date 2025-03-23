@@ -8,69 +8,91 @@ import (
 	"sigillum/utils"
 )
 
-func ExportC(key []byte, cipertext []byte, filepath string) bool {
-	_, err := os.Create(filepath)
-	if err != nil {
-		return false
-	}
-
-	return parseC(key, cipertext, filepath)
+/*
+Options for exporting:
+  - key: 		The key provided by the user used for sealing;
+  - cipertext:	The sealed payload derived from the unsealed payload;
+  - seal:		The algorithm used for sealing;
+  - outputFile:	The filename of the file and the file extension;
+  - exportName:	The name the deseal function will use to save the output in.
+*/
+type ExportCOptions struct {
+	key        []byte
+	cipertext  []byte
+	seal       string
+	outputFile string
+	exportName string
 }
 
-func PrintC(key []byte, cipertext []byte) bool {
-	return parseC(key, cipertext, "")
+func CreateExportCOptions(key []byte, cipertext []byte, seal string, outputFile string, exportName string) ExportCOptions {
+	return ExportCOptions{key: key, cipertext: cipertext, seal: seal, outputFile: outputFile, exportName: exportName}
 }
 
-func parseC(key []byte, cipertext []byte, filepath string) bool {
-	flag := filepath == ""
-
-	filePath, err := utils.GetPath("rc4", "c")
+func ExportC(options ExportCOptions) error {
+	file, err := os.Create(options.outputFile)
 	if err != nil {
-		return false
+		return err
 	}
 
-	file, err := os.Open(filePath)
-	if err != nil {
-		return false
-	}
-	defer file.Close()
+	return parseC(options, file)
+}
 
-	scanner := bufio.NewScanner(file)
+func PrintC(options ExportCOptions) error {
+	return parseC(options, nil)
+}
+
+func parseC(options ExportCOptions, file *os.File) error {
+	flag := file == nil
+
+	filePath, err := utils.GetPath(options.seal, "C")
+	if err != nil {
+		return err
+	}
+
+	codeTemplate, err := os.Open(filePath)
+	if err != nil {
+		return err
+	}
+	defer codeTemplate.Close()
+
+	scanner := bufio.NewScanner(codeTemplate)
 	for scanner.Scan() {
 		line := scanner.Text()
 		switch line {
 		case constants.CIPER:
-			output("unsigned char cipertext[] = {", flag, filepath)
-			outputAnomaly(cipertext, flag, filepath)
+			output("unsigned char cipertext[] = {", flag, file)
+			outputAnomaly(options.cipertext, flag, file)
 		case constants.KEY:
-			output("unsigned char key[] = {", flag, filepath)
-			outputAnomaly(key, flag, filepath)
+			output("unsigned char key[] = {", flag, file)
+			outputAnomaly(options.key, flag, file)
+		case constants.FILENAME:
+			output("LPWSTR filename = L\""+options.exportName+"\";\n", flag, file)
 		default:
-			output(line+"\n", flag, filepath)
+			output(line+"\n", flag, file)
 		}
 	}
-	return true
+	return nil
 }
 
-func outputAnomaly(anomaly []byte, flag bool, filepath string) {
+func outputAnomaly(anomaly []byte, flag bool, file *os.File) {
 	for i, ciperchar := range anomaly {
 		if i%4 == 0 {
-			output("\n\t", flag, filepath)
+			output("\n\t", flag, file)
 		}
 		if i != len(anomaly)-1 {
 			out := fmt.Sprintf("0x%x, ", ciperchar)
-			output(out, flag, filepath)
+			output(out, flag, file)
 		} else {
 			out := fmt.Sprintf("0x%x\n};\n", ciperchar)
-			output(out, flag, filepath)
+			output(out, flag, file)
 		}
 	}
 }
 
-func output(line string, flag bool, filename string) {
+func output(line string, flag bool, file *os.File) {
 	if flag {
 		fmt.Print(line)
 	} else {
-		os.WriteFile(filename, []byte(line), 0774)
+		file.Write([]byte(line))
 	}
 }

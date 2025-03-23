@@ -1,4 +1,4 @@
-package encryption
+package sealing
 
 import (
 	"crypto/rc4"
