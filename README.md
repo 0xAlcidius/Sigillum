@@ -16,3 +16,9 @@ To install Sigillum to your machine simply clone the repository:
 git clone <repo.git>
 ```
 Make sure [Golang](https://golang.google.cn/dl/) is installed on your machine
+## Disclaimer
+This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, firness for a particular purpose, title and non-infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort, or otherwise arising form, out of, or in connection with the software or the use or other dealings in the software.
+### Security Notice
+While Sigillum is designed simplify encryption and decryption of payloads, no software can guarantee absolute protection. Users are responsible for implementing and maintaining comprehensive security measures to protect their systems and data from cyber threats. The authors do not warrant that the software will integrate error-free with all other software running on users's systems.
+### Compliance and Legal Use
+Users are responsible for ensuring that their use of this software complies with all applicable local, national and international laws and regulations. The authors disclaim any liability for unauthorized or unlawful use of this software.

@@ -25,7 +25,7 @@ func ExportC(options ExportOptions) error {
 func parseC(options ExportOptions, file *os.File) error {
 	flag := file == nil
 
-	filePath, err := utils.GetPath(options.seal, "C")
+	filePath, err := utils.GetPath(options.seal, options.language)
 	if err != nil {
 		return err
 	}
