@@ -1,5 +1,5 @@
 # Sigillum
-Sigillum is a tool created to obfuscate /rypt a payload. In Sigillum this process is called "Sealing". Sealing a payload with Sigillum will provide both the sealed payload as well as the desealing function in the programming language chosen by the user.
+Sigillum is a tool created to obfuscate / enrypt a payload. In Sigillum this process is called "Sealing". Sealing a payload with Sigillum will provide both the sealed payload as well as the desealing function in the programming language chosen by the user. Sigillum can be used to simplify the process of developing software with encrypted payloads. Ranging from images to text and to binaries.
 ## How to use
 Sigillum requires a payload the seal and a key to seal it with. If both are provided the standard seal algorithm will be RC4 and the output language will be C. Here follows an example of how to use Sigillum:
 ```shell
