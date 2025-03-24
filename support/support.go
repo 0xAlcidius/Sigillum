@@ -9,6 +9,7 @@ import (
 var SupportedSeals = map[string]func([]byte, []byte) ([]byte, error){
 	"RC4": sealing.RC4CreateSeal,
 	"XOR": sealing.XORCreateSeal,
+	"AES": sealing.AESCreateSeal,
 }
 
 /* ADD NEWLY SUPPORTED PROGRAMMING LANGUAGES HERE */
