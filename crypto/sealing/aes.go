@@ -43,7 +43,7 @@ func addPadding(item []byte, modulus int) []byte {
 	paddingLength := modulus - (len(item) % modulus)
 
 	for i := 0; i < paddingLength; i++ {
-		item = append(item, byte(0))
+		item = append(item, byte(0xFF))
 	}
 	return item
 }

@@ -5,7 +5,7 @@ import (
 	"sigillum/export"
 )
 
-/* ADD NEWLY CREATED ALGORITHM HERE */
+/* ADD NEWLY SUPPORTED ALGORITHM HERE */
 var SupportedSeals = map[string]func([]byte, []byte) ([]byte, error){
 	"RC4": sealing.RC4CreateSeal,
 	"XOR": sealing.XORCreateSeal,
