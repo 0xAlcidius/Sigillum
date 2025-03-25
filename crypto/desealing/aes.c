@@ -13,11 +13,11 @@
 
 // [[FILENAME]]
 
-unsigned char* addPadding(IN BYTE item[], IN DWORD dwItemSize, IN DWORD modulus, OUT DWORD *dwPaddedSize) {
+PBYTE AddPadding(IN BYTE item[], IN DWORD dwItemSize, IN DWORD modulus, OUT DWORD* dwPaddedSize) {
     DWORD dwPaddingLength = modulus - (dwItemSize % modulus);
     *dwPaddedSize = dwItemSize + dwPaddingLength;
 
-    unsigned char *newItem = malloc(*dwPaddedSize);
+    unsigned char* newItem = malloc(*dwPaddedSize);
     if (newItem == NULL) {
         return NULL;
     }
@@ -29,7 +29,25 @@ unsigned char* addPadding(IN BYTE item[], IN DWORD dwItemSize, IN DWORD modulus,
     return newItem;
 }
 
-int main(void) {
+PBYTE RemovePadding(IN BYTE item[], IN DWORD dwItemSize, OUT DWORD* dwNewItemSize) {
+    *dwNewItemSize = 0;
+
+    PBYTE pbyNewItem = malloc(dwItemSize);
+    if (!pbyNewItem) {
+        return NULL;
+    }
+
+    for (SIZE_T i = 0, j = 0; i < dwItemSize; i++) {
+        if (item[i] != 0xFF) {
+            memset(pbyNewItem + j, item[i], 1);
+            j++;
+            *dwNewItemSize = j;
+        }
+    }
+    return pbyNewItem;
+}
+
+PBYTE AESDeseal(OUT DWORD *dwSize) {
     NTSTATUS status;
     BCRYPT_ALG_HANDLE hAlg = NULL;
     BCRYPT_KEY_HANDLE hKey = NULL;
@@ -52,20 +70,50 @@ int main(void) {
     }
 
     DWORD dwKeySize = 0;
-    unsigned char *bKey = addPadding(key, sizeof(key), KEYSIZE, &dwKeySize);
+    unsigned char* bKey = AddPadding(key, sizeof(key), KEYSIZE, &dwKeySize);
 
     status = BCryptGenerateSymmetricKey(hAlg, &hKey, NULL, 0, bKey, KEYSIZE, 0);
     if (!BCRYPT_SUCCESS(status)) {
         return 1;
     }
 
-    BYTE plaintext[sizeof(byCiphertext)] = {0};
-    DWORD plaintextSize = 0;
+    BYTE bPaddedPlaintext[sizeof(byCiphertext)];
+    DWORD dwPaddedPlaintextSize = 0;
 
-    status = BCryptDecrypt(hKey, byCiphertext, sizeof(byCiphertext), NULL, byIv, IVSIZE, plaintext, sizeof(plaintext), &plaintextSize, 0);
+    status = BCryptDecrypt(hKey, byCiphertext, sizeof(byCiphertext), NULL, byIv, IVSIZE, bPaddedPlaintext, sizeof(bPaddedPlaintext), &dwPaddedPlaintextSize, 0);
     if (!BCRYPT_SUCCESS(status)) {
         return 1;
     }
 
-    printf("plaintext: %s\n", plaintext);
+    PBYTE pbyPlaintext = RemovePadding(bPaddedPlaintext, dwPaddedPlaintextSize, dwSize);
+    return pbyPlaintext;
+}
+
+DWORD WritePayload(LPWSTR filename, PBYTE pbyPlaintext, DWORD dwSize) {
+    HANDLE hFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    if (hFile == INVALID_HANDLE_VALUE) {
+        return -1;
+    }
+
+    DWORD bytesWritten;
+    if (!WriteFile(hFile, pbyPlaintext, dwSize, &bytesWritten, NULL)) {
+        CloseHandle(hFile);
+        return -1;
+    }
+    CloseHandle(hFile);
+    return 0;
+}
+
+DWORD PrintPayload(PBYTE pbyPlaintext) {
+    printf("payload : \"%s\" \n", pbyPlaintext);
+}
+
+int main() {
+    DWORD dwSize = 0;
+    PBYTE pbyPlaintext = AESDeseal(&dwSize);
+
+    WritePayload(filename, pbyPlaintext, dwSize);
+    
+    PrintPayload(pbyPlaintext);
 }
