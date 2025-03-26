@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 	"sigillum/export"
 	"sigillum/support"
@@ -25,49 +24,32 @@ var (
 func main() {
 	var payload []byte
 	_, err := app.Parse(os.Args[1:])
-	if err != nil {
-		log.Printf("Error parsing arguments: %s", err)
-		os.Exit(1)
-	}
+	kingpin.FatalIfError(err, "Error parsing arguments")
 
 	payload, isFile, err := utils.ParsePayload(*payload_command)
 	if err != nil && isFile {
-		log.Printf("Could not find file: %s, error: %s", *payload_command, err)
-		os.Exit(1)
+		kingpin.FatalIfError(err, "Could not find file")
 	}
 
 	key, err := utils.ParseKey(*key_command)
-	if err != nil {
-		log.Printf("Could not parse key: %s, error: %s", key, err)
-		os.Exit(1)
-	}
+	kingpin.FatalIfError(err, "Could not parse key")
 
 	encrypt, found := support.SupportedSeals[strings.ToUpper(*seal_command)]
 
 	if !found {
-		log.Printf("Sealing algorithm not supported.")
-		os.Exit(1)
+		kingpin.Fatalf("Sealing algorithm not supported")
 	}
 
 	cipertext, err := encrypt(key, payload)
-	if err != nil {
-		log.Println("Failed to encrypt payload. Error: ", err)
-		os.Exit(1)
-	}
+	kingpin.FatalIfError(err, "Failed to encrypt payload")
 
 	exportCipertext, found := support.SupportedLanguages[strings.ToUpper(*language_command)]
 
 	if !found {
-		log.Printf("Programming language not supported.")
-		os.Exit(1)
+		kingpin.Fatalf("Programming language not supported")
 	}
 
 	options := export.CreateExportOptions(key, cipertext, *seal_command, *language_command, *output_command, *filename_command)
 	err = exportCipertext(options)
-	if err != nil {
-		log.Printf("Failed to export cipertext. Error: %s", err)
-		os.Exit(1)
-	}
-
-	os.Exit(0)
+	kingpin.FatalIfError(err, "Failed to export ciphertext")
 }
