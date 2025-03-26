@@ -11,9 +11,9 @@ import (
 const MAXKEYSIZE = 32
 
 func AESCreateSeal(key []byte, payload []byte) ([]byte, error) {
-
+	paddingLength := 0
 	if len(key) < MAXKEYSIZE {
-		key = addPadding(key, MAXKEYSIZE)
+		key, paddingLength = addPadding(key, MAXKEYSIZE)
 	} else if len(key) > MAXKEYSIZE {
 		return nil, errors.New("key was too big. Can be a maximum of 32 characters with AES")
 	}
@@ -24,7 +24,7 @@ func AESCreateSeal(key []byte, payload []byte) ([]byte, error) {
 	}
 
 	if len(payload)%(cBlock.BlockSize()) != 0 {
-		payload = addPadding(payload, cBlock.BlockSize())
+		payload, paddingLength = addPadding(payload, cBlock.BlockSize())
 	}
 
 	ciphertext := make([]byte, len(payload))
@@ -36,14 +36,15 @@ func AESCreateSeal(key []byte, payload []byte) ([]byte, error) {
 	mode := cipher.NewCBCEncrypter(cBlock, iv)
 	mode.CryptBlocks(ciphertext, payload)
 
-	return append(iv, ciphertext...), nil
+	ciphertext = append(iv, ciphertext...)
+	return append(ciphertext, byte(paddingLength)), nil
 }
 
-func addPadding(item []byte, modulus int) []byte {
+func addPadding(item []byte, modulus int) ([]byte, int) {
 	paddingLength := modulus - (len(item) % modulus)
 
 	for i := 0; i < paddingLength; i++ {
-		item = append(item, byte(0xFF))
+		item = append(item, 0xFF)
 	}
-	return item
+	return item, paddingLength
 }
