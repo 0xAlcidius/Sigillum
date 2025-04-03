@@ -1,7 +1,7 @@
 package constants
 
 const (
-	CIPER    = "// [[CIPERTEXT]]"
+	CIPER    = "// [[CIPHERTEXT]]"
 	KEY      = "// [[KEY]]"
 	FILENAME = "// [[FILENAME]]"
 

@@ -41,8 +41,8 @@ func parseC(options ExportOptions, file *os.File) error {
 		line := scanner.Text()
 		switch line {
 		case constants.CIPER:
-			output("unsigned char cipertext[] = {", flag, file)
-			outputAnomaly(options.cipertext, flag, file)
+			output("unsigned char ciphertext[] = {", flag, file)
+			outputAnomaly(options.ciphertext, flag, file)
 		case constants.KEY:
 			output("unsigned char key[] = {", flag, file)
 			outputAnomaly(options.key, flag, file)

@@ -1,7 +1,7 @@
 #include <Windows.h>
 #include <stdio.h>
 
-// [[CIPERTEXT]]
+// [[CIPHERTEXT]]
 
 // [[KEY]]
 
@@ -53,7 +53,7 @@ DWORD WritePayload(LPWSTR filename) {
 	}
 
 	DWORD bytesWritten;
-	if (!WriteFile(hFile, cipertext, sizeof(cipertext), &bytesWritten, NULL)) {
+	if (!WriteFile(hFile, ciphertext, sizeof(ciphertext), &bytesWritten, NULL)) {
 		CloseHandle(hFile);
 		return -1;
 	}
@@ -62,11 +62,11 @@ DWORD WritePayload(LPWSTR filename) {
 }
 
 DWORD PrintPayload() {
-	printf("payload : \"%s\" \n", cipertext);
+	printf("payload : \"%s\" \n", ciphertext);
 }
 
 int main() {
-	if (!SysFunc032(key, cipertext, sizeof(key), sizeof(cipertext))) {
+	if (!SysFunc032(key, ciphertext, sizeof(key), sizeof(ciphertext))) {
 		return -1;
 	}
 

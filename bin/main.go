@@ -40,16 +40,16 @@ func main() {
 		kingpin.Fatalf("Sealing algorithm not supported")
 	}
 
-	cipertext, err := encrypt(key, payload)
+	ciphertext, err := encrypt(key, payload)
 	kingpin.FatalIfError(err, "Failed to encrypt payload")
 
-	exportCipertext, found := support.SupportedLanguages[strings.ToUpper(*language_command)]
+	exportciphertext, found := support.SupportedLanguages[strings.ToUpper(*language_command)]
 
 	if !found {
 		kingpin.Fatalf("Programming language not supported")
 	}
 
-	options := export.CreateExportOptions(key, cipertext, *seal_command, *language_command, *output_command, *filename_command)
-	err = exportCipertext(options)
+	options := export.CreateExportOptions(key, ciphertext, *seal_command, *language_command, *output_command, *filename_command)
+	err = exportciphertext(options)
 	kingpin.FatalIfError(err, "Failed to export ciphertext")
 }

@@ -6,22 +6,22 @@ import (
 
 func RC4CreateSeal(key []byte, shellcode []byte) ([]byte, error) {
 
-	cipertext, err := createCipertext(key, shellcode)
+	ciphertext, err := createCiphertext(key, shellcode)
 	if err != nil {
 		return nil, err
 	}
-	return cipertext, nil
+	return ciphertext, nil
 }
 
-func createCipertext(key []byte, shellcode []byte) ([]byte, error) {
-	cipertext := make([]byte, len(shellcode))
+func createCiphertext(key []byte, shellcode []byte) ([]byte, error) {
+	ciphertext := make([]byte, len(shellcode))
 
 	c, err := rc4.NewCipher([]byte(key))
 	if err != nil {
 		return nil, err
 	}
 
-	c.XORKeyStream(cipertext, shellcode)
+	c.XORKeyStream(ciphertext, shellcode)
 
-	return cipertext, nil
+	return ciphertext, nil
 }

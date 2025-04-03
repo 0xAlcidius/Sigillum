@@ -17,7 +17,7 @@
 #define KEYSIZE 32
 #define IVSIZE 16
 
-// [[CIPERTEXT]]
+// [[CIPHERTEXT]]
 
 // [[KEY]]
 
@@ -56,12 +56,12 @@ PBYTE AESDeseal(OUT DWORD* dwSize) {
 	BCRYPT_KEY_HANDLE hKey = NULL;
 
 	BYTE byIv[IVSIZE];
-	BYTE byCiphertext[sizeof(cipertext) - IVSIZE - 1];
+	BYTE byCiphertext[sizeof(ciphertext) - IVSIZE - 1];
 	BYTE byCiphertextPadding[1];
 
-	memcpy(byIv, cipertext, IVSIZE);
-	memcpy(byCiphertext, cipertext + IVSIZE, sizeof(cipertext) - IVSIZE - 1);
-	memcpy(byCiphertextPadding, cipertext + sizeof(cipertext) - 1, 1);
+	memcpy(byIv, ciphertext, IVSIZE);
+	memcpy(byCiphertext, ciphertext + IVSIZE, sizeof(ciphertext) - IVSIZE - 1);
+	memcpy(byCiphertextPadding, ciphertext + sizeof(ciphertext) - 1, 1);
 
 	status = BCryptOpenAlgorithmProvider(&hAlg, BCRYPT_AES_ALGORITHM, NULL, 0);
 	if (!BCRYPT_SUCCESS(status)) {
