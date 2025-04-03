@@ -1,0 +1,29 @@
+name: Windows based CICD pipeline for Sigillum
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Go setup
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.24.1'
+
+      - name: Go Dependencies
+        run: go mod tidy
+
+      - name: Run Tests
+        run: go test -v ./...
+
+      - name: Compile AES Decryptor
+        run: 
+          gcc crypto\tests\output\aes.c -o aes.exe -lbcrypt -mconsole 
+
+      - name: Run AES Decryptor
+        run: .\aes.exe
