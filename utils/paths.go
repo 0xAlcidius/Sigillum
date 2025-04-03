@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sigillum/constants"
@@ -13,6 +15,19 @@ func GetPath(sealtype string, language string) (string, error) {
 	root, err := getProjectRoot()
 	if err != nil {
 		return "", err
+	}
+
+	if !strings.Contains(root, constants.PROJECTNAME) {
+		err = os.Chdir(constants.PROJECTNAME)
+		if err != nil {
+			return "", errors.New(fmt.Sprint("Could not find this project: ", constants.PROJECTNAME, " in root: ", root, " and could not change into the directory of ", constants.PROJECTNAME))
+		}
+	}
+
+	root, lastDir := filepath.Split(root)
+
+	for lastDir != constants.PROJECTNAME {
+		root, lastDir = filepath.Split(root[:len(root)-1])
 	}
 
 	path := filepath.Join(root, constants.DESEALINGPATH, identifier)
@@ -28,5 +43,5 @@ func getProjectRoot() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.Dir(ex), nil
+	return ex, nil
 }

@@ -6,4 +6,5 @@ const (
 	FILENAME = "// [[FILENAME]]"
 
 	DESEALINGPATH = "Sigillum/crypto/desealing/"
+	PROJECTNAME   = "Sigillum"
 )

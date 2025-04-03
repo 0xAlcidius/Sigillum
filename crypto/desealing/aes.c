@@ -27,7 +27,7 @@ PBYTE AddPadding(IN BYTE item[], IN DWORD dwItemSize, IN DWORD dwModulus, OUT DW
 	DWORD dwPaddingLength = dwModulus - (dwItemSize % dwModulus);
 	*dwPaddedSize = dwItemSize + dwPaddingLength;
 
-	unsigned char* newItem = malloc(*dwPaddedSize);
+	unsigned char* newItem = (unsigned char*) malloc(*dwPaddedSize);
 	if (newItem == NULL) {
 		return NULL;
 	}
@@ -41,7 +41,7 @@ PBYTE AddPadding(IN BYTE item[], IN DWORD dwItemSize, IN DWORD dwModulus, OUT DW
 
 PBYTE RemovePadding(IN BYTE item[], IN DWORD dwItemSize, IN DWORD dwBytesToRemove, OUT DWORD* dwNewItemSize) {
 	*dwNewItemSize = dwItemSize - dwBytesToRemove;
-	PBYTE pbyNewItem = malloc(*dwNewItemSize);
+	PBYTE pbyNewItem = (unsigned char*) malloc(*dwNewItemSize);
 	if (!pbyNewItem) {
 		return NULL;
 	}
@@ -65,13 +65,13 @@ PBYTE AESDeseal(OUT DWORD* dwSize) {
 
 	status = BCryptOpenAlgorithmProvider(&hAlg, BCRYPT_AES_ALGORITHM, NULL, 0);
 	if (!BCRYPT_SUCCESS(status)) {
-		return 1;
+		return NULL;
 	}
 
 	status = BCryptSetProperty(hAlg, BCRYPT_CHAINING_MODE, (PUCHAR)BCRYPT_CHAIN_MODE_CBC, sizeof(BCRYPT_CHAIN_MODE_CBC), 0);
 	if (!BCRYPT_SUCCESS(status)) {
 		BCryptCloseAlgorithmProvider(hAlg, 0);
-		return 1;
+		return NULL;
 	}
 
 	DWORD dwKeySize = 0;
@@ -80,7 +80,7 @@ PBYTE AESDeseal(OUT DWORD* dwSize) {
 	status = BCryptGenerateSymmetricKey(hAlg, &hKey, NULL, 0, bKey, KEYSIZE, 0);
 	if (!BCRYPT_SUCCESS(status)) {
 		free(bKey);
-		return 1;
+		return NULL;
 	}
 
 	free(bKey);
@@ -90,7 +90,7 @@ PBYTE AESDeseal(OUT DWORD* dwSize) {
 
 	status = BCryptDecrypt(hKey, byCiphertext, sizeof(byCiphertext), NULL, byIv, IVSIZE, bPaddedPlaintext, sizeof(bPaddedPlaintext), &dwPaddedPlaintextSize, 0);
 	if (!BCRYPT_SUCCESS(status)) {
-		return 1;
+		return NULL;
 	}
 
 	PBYTE pbyPlaintext = RemovePadding(bPaddedPlaintext, dwPaddedPlaintextSize, *byCiphertextPadding, dwSize);
@@ -98,8 +98,8 @@ PBYTE AESDeseal(OUT DWORD* dwSize) {
 	return pbyPlaintext;
 }
 
-DWORD WritePayload(LPWSTR filename, PBYTE pbyPlaintext, DWORD dwSize) {
-	HANDLE hFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+DWORD WritePayload(PBYTE pbyPlaintext, DWORD dwSize) {
+	HANDLE hFile = CreateFile(lpFilename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hFile == INVALID_HANDLE_VALUE) {
 		return -1;
@@ -122,8 +122,11 @@ int main() {
 	DWORD dwSize = 0;
 	PBYTE pbyPlaintext = AESDeseal(&dwSize);
 
-	WritePayload(filename, pbyPlaintext, dwSize);
+	if(!pbyPlaintext) {
+		return -1;
+	}
 
+	WritePayload(pbyPlaintext, dwSize);
 	PrintPayload(pbyPlaintext);
 
 	free(pbyPlaintext);

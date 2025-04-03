@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"log"
 	"os"
 )
 
@@ -12,7 +11,6 @@ func ParseKey(key string) ([]byte, error) {
 func ParsePayload(payload string) ([]byte, bool, error) {
 	file, err := os.Open(payload)
 	if err != nil {
-		log.Print("No\n")
 		return []byte(payload), false, err
 	}
 

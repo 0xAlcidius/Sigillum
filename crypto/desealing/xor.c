@@ -17,8 +17,8 @@ BOOL XORDeseal(IN PBYTE pKey, IN PBYTE pPayload, IN DWORD dwKeySize, IN DWORD dw
 	return TRUE;
 }
 
-DWORD WritePayload(LPWSTR filename) {
-	HANDLE hFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+DWORD WritePayload() {
+	HANDLE hFile = CreateFile(lpFilename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hFile == INVALID_HANDLE_VALUE) {
 		return -1;
@@ -42,7 +42,7 @@ int main() {
 		return -1;
 	}
 
+    WritePayload();
 	PrintPayload();
-    WritePayload(filename);
 	return 0;
 }

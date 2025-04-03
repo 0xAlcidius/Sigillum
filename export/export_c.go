@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"sigillum/constants"
 	"sigillum/utils"
 )
@@ -13,13 +14,26 @@ func ExportC(options ExportOptions) error {
 	var err error = nil
 
 	if options.outputFile != "" {
+		dir, _ := filepath.Split(options.outputFile)
+
+		if dir != "" {
+			err = os.MkdirAll(dir, os.ModePerm)
+			if err != nil {
+				return err
+			}
+		}
+
 		file, err = os.Create(options.outputFile)
 		if err != nil {
 			return err
 		}
+		defer file.Close()
 	}
 
-	return parseC(options, file)
+	err = parseC(options, file)
+
+	file.Close()
+	return err
 }
 
 func parseC(options ExportOptions, file *os.File) error {
@@ -37,6 +51,7 @@ func parseC(options ExportOptions, file *os.File) error {
 	defer codeTemplate.Close()
 
 	scanner := bufio.NewScanner(codeTemplate)
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		switch line {
@@ -47,11 +62,12 @@ func parseC(options ExportOptions, file *os.File) error {
 			output("unsigned char key[] = {", flag, file)
 			outputAnomaly(options.key, flag, file)
 		case constants.FILENAME:
-			output("LPWSTR filename = L\""+options.exportName+"\";\n", flag, file)
+			output("LPCSTR lpFilename = L\""+options.exportName+"\";\n", flag, file)
 		default:
 			output(line+"\n", flag, file)
 		}
 	}
+
 	return nil
 }
 
@@ -74,6 +90,6 @@ func output(line string, flag bool, file *os.File) {
 	if flag {
 		fmt.Print(line)
 	} else {
-		file.Write([]byte(line))
+		file.WriteString(line)
 	}
 }
