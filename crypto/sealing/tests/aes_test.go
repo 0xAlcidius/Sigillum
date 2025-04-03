@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	PAYLOAD     = "Sigillum is cool! Atleast I think so!"
+	PAYLOAD     = "Sigillum is cool!"
 	KEY         = "Keep it secret!"
 	SEAL        = "AES"
 	LANGUAGE    = "C"
@@ -18,7 +18,7 @@ const (
 	EXPORT_NAME = "payload.txt"
 )
 
-func TestAesSealingText(t *testing.T) {
+func TestAesText(t *testing.T) {
 	tempDir := "output"
 	filePath := filepath.Join(tempDir, OUTPUT_FILE)
 
