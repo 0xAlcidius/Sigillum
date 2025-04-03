@@ -23,7 +23,7 @@ jobs:
 
       - name: Compile AES Decryptor
         run: 
-          gcc crypto\tests\output\aes.c -o aes.exe -lbcrypt -mconsole 
+          gcc crypto\sealing\tests\output\aes.c -o aes.exe -lbcrypt -mconsole 
 
       - name: Run AES Decryptor
         run: .\aes.exe
