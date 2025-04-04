@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"crypto/rc4"
 	"fmt"
 	"os/exec"
 	"path/filepath"
@@ -24,14 +23,11 @@ func TestRC4SealingText(t *testing.T) {
 	options := export.CreateExportOptions([]byte(KEY), ciphertext, "RC4", language, filePath, EXPORT_NAME)
 	export.ExportC(options)
 
-	plaintext := make([]byte, len(ciphertext))
-
-	c, err := rc4.NewCipher([]byte(KEY))
+	plaintext, err := sealing.RC4CreateSeal([]byte(KEY), ciphertext)
 	if err != nil {
-		t.Fatalf("Error trying to create new RC4 cipher with key: %s, err: %s", KEY, err)
+		t.Error("Error creating plaintext in RC4 test. Err:", err)
 	}
 
-	c.XORKeyStream(plaintext, ciphertext)
 	if string(plaintext[:len(PAYLOAD)]) != PAYLOAD {
 		t.Error("plaintext was not the same as provided payload")
 	}
@@ -45,8 +41,8 @@ func TestRC4CompilationC(t *testing.T) {
 		t.Fatalf("Compilation of RC4 in C failed: %s\nOutput: %s", err, string(output))
 	}
 
-	runAes := exec.Command(".\\" + TEMPDIR + "\\rc4.exe")
-	output, err = runAes.CombinedOutput()
+	runRc4 := exec.Command(".\\" + TEMPDIR + "\\rc4.exe")
+	output, err = runRc4.CombinedOutput()
 	if err != nil {
 		t.Fatalf("Compilation of RC4 in C failed: %s\nOutput: %s", err, string(output))
 	}
