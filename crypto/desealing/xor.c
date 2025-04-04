@@ -14,11 +14,13 @@ BOOL XORDeseal(IN PBYTE pKey, IN PBYTE pPayload, IN DWORD dwKeySize, IN DWORD dw
 		}
 		pPayload[i] = pPayload[i] ^ pKey[j];
 	}
+
+	pPayload[dwPayloadSize] = '\0';
 	return TRUE;
 }
 
 DWORD WritePayload() {
-	HANDLE hFile = CreateFile(lpFilename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFileW(lpFilename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hFile == INVALID_HANDLE_VALUE) {
 		return -1;
