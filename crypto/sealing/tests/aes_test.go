@@ -4,7 +4,6 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"fmt"
-	"os"
 	"os/exec"
 	"path/filepath"
 	"sigillum/crypto/sealing"
@@ -13,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestAesSealingText(t *testing.T) {
+func TestAESSealingText(t *testing.T) {
 	var language string = "C"
 	filePath := filepath.Join(TEMPDIR, "aes.c")
 
@@ -52,14 +51,14 @@ func TestAesSealingText(t *testing.T) {
 }
 
 /* To run this test successfully, please make sure gcc is installed on the system this test will be performed on. */
-func TestAesCompilationC(t *testing.T) {
-	compile := exec.Command("gcc", "output\\aes.c", "-o", "aes.exe", "-lbcrypt", "-mconsole")
+func TestAESCompilationC(t *testing.T) {
+	compile := exec.Command("gcc", TEMPDIR+"\\aes.c", "-o", TEMPDIR+"\\aes.exe", "-lbcrypt", "-mconsole")
 	output, err := compile.CombinedOutput()
 	if err != nil {
 		t.Fatalf("Compilation of AES in C failed: %s\nOutput: %s", err, string(output))
 	}
 
-	runAes := exec.Command(".\\aes.exe")
+	runAes := exec.Command(".\\" + TEMPDIR + "\\aes.exe")
 	output, err = runAes.CombinedOutput()
 	if err != nil {
 		t.Fatalf("Compilation of AES in C failed: %s\nOutput: %s", err, string(output))
@@ -70,10 +69,4 @@ func TestAesCompilationC(t *testing.T) {
 		t.Fatalf("Output was not similar to input\nExpected: %s\nOutput: %s\n", PAYLOAD, string(output))
 	}
 	t.Cleanup(cleanup)
-}
-
-func cleanup() {
-	os.RemoveAll(TEMPDIR)
-	os.Remove("aes.exe")
-	os.Remove(EXPORT_NAME)
 }
