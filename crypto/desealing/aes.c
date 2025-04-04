@@ -1,13 +1,3 @@
-/*
-    ** AUTHOR: 0xAlcidius
-
-    Note:
-    The AES algorithm uses AES-CBC. The first 16 bytes of the ciphertext are composed 
-    of the initialization vector (IV), followed up by the ciphertext. The last byte of the
-    ciphertext resembles the amount of bytes that are used for padding. The RemovePadding
-    function uses this byte exclude X amount of bytes from the end of the payload.
-*/
-
 #include <Windows.h>
 #include <bcrypt.h>
 #include <stdio.h>
@@ -47,6 +37,7 @@ PBYTE RemovePadding(IN BYTE item[], IN DWORD dwItemSize, IN DWORD dwBytesToRemov
 	}
 
 	memcpy(pbyNewItem, item, *dwNewItemSize);
+	pbyNewItem[*dwNewItemSize] = '\0';
 	return pbyNewItem;
 }
 
@@ -61,7 +52,7 @@ PBYTE AESDeseal(OUT DWORD* dwSize) {
 
 	memcpy(byIv, ciphertext, IVSIZE);
 	memcpy(byCiphertext, ciphertext + IVSIZE, sizeof(ciphertext) - IVSIZE - 1);
-	memcpy(byCiphertextPadding, ciphertext + sizeof(ciphertext) - 1, 1);
+	memcpy(byCiphertextPadding, ciphertext + sizeof(ciphertext) - 1, 1);			// Last byte of the ciphertext is a byte representing the amount of bytes were padding
 
 	status = BCryptOpenAlgorithmProvider(&hAlg, BCRYPT_AES_ALGORITHM, NULL, 0);
 	if (!BCRYPT_SUCCESS(status)) {
@@ -99,7 +90,7 @@ PBYTE AESDeseal(OUT DWORD* dwSize) {
 }
 
 DWORD WritePayload(PBYTE pbyPlaintext, DWORD dwSize) {
-	HANDLE hFile = CreateFile(lpFilename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFileW(lpFilename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hFile == INVALID_HANDLE_VALUE) {
 		return -1;

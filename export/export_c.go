@@ -62,12 +62,11 @@ func parseC(options ExportOptions, file *os.File) error {
 			output("unsigned char key[] = {", flag, file)
 			outputAnomaly(options.key, flag, file)
 		case constants.FILENAME:
-			output("LPCSTR lpFilename = L\""+options.exportName+"\";\n", flag, file)
+			output("LPCWSTR lpFilename = L\""+options.exportName+"\";\n", flag, file)
 		default:
 			output(line+"\n", flag, file)
 		}
 	}
-
 	return nil
 }
 
