@@ -7,7 +7,7 @@
 
 // [[FILENAME]]
 
-typedef struct
+typedef struct USTRING
 {
     DWORD Length;
     DWORD MaximumLength;
@@ -19,13 +19,13 @@ typedef NTSTATUS(NTAPI* fnSystemFunction032)(
     struct USTRING* Key
     );
 
-BOOL SysFunc032(IN PBYTE pKey, IN PBYTE pPayload, IN DWORD dwKeySize, IN DWORD sPayloadSize) {
+BOOL RC4Deseal(IN PBYTE pKey, IN PBYTE pPayload, IN DWORD dwKeySize, IN DWORD dwPayloadSize) {
 
-    NTSTATUS STATUS = NULL;
+    NTSTATUS STATUS = 0;
 
     USTRING Data = {
-        .Length = sPayloadSize,
-        .MaximumLength = sPayloadSize,
+        .Length = dwPayloadSize,
+        .MaximumLength = dwPayloadSize,
         .Buffer = pPayload
     };
 
@@ -42,11 +42,13 @@ BOOL SysFunc032(IN PBYTE pKey, IN PBYTE pPayload, IN DWORD dwKeySize, IN DWORD s
         return FALSE;
     }
 
+    ciphertext[dwPayloadSize] = '\0';
+
     return TRUE;
 }
 
 DWORD WritePayload() {
-	HANDLE hFile = CreateFile(lpFilename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFileW(lpFilename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hFile == INVALID_HANDLE_VALUE) {
 		return -1;
@@ -66,7 +68,7 @@ DWORD PrintPayload() {
 }
 
 int main() {
-	if (!SysFunc032(key, ciphertext, sizeof(key), sizeof(ciphertext))) {
+	if (!RC4Deseal(key, ciphertext, sizeof(key), sizeof(ciphertext))) {
 		return -1;
 	}
 
