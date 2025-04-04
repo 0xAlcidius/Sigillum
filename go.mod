@@ -1,4 +1,4 @@
-module sigillum
+module github.com/0xAlcidius/Sigillum
 
 go 1.24.1
 

@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"sigillum/constants"
-	"sigillum/utils"
+
+	"github.com/0xAlcidius/Sigillum/crypto/desealing"
+
+	"github.com/0xAlcidius/Sigillum/constants"
 )
 
 func ExportC(options ExportOptions) error {
@@ -39,7 +41,7 @@ func ExportC(options ExportOptions) error {
 func parseC(options ExportOptions, file *os.File) error {
 	flag := file == nil
 
-	filePath, err := utils.GetPath(options.seal, options.language)
+	filePath, err := desealing.GetDesealPath(options.seal, options.language)
 	if err != nil {
 		return err
 	}
