@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"os/exec"
 	"path/filepath"
-	"sigillum/crypto/sealing"
-	"sigillum/export"
 	"strings"
 	"testing"
+
+	"github.com/0xAlcidius/Sigillum/crypto/sealing"
+	"github.com/0xAlcidius/Sigillum/export"
 )
 
 func TestRC4SealingText(t *testing.T) {

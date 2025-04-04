@@ -1,8 +1,9 @@
 package support
 
 import (
-	"sigillum/crypto/sealing"
-	"sigillum/export"
+	"github.com/0xAlcidius/Sigillum/crypto/sealing"
+
+	"github.com/0xAlcidius/Sigillum/export"
 )
 
 /* ADD NEWLY SUPPORTED ALGORITHM HERE */
