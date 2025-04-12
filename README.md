@@ -2,14 +2,45 @@
 Sigillum is a tool created to obfuscate / enrypt a payload. In Sigillum this process is called "Sealing". Sealing a payload with Sigillum will provide both the sealed payload as well as the desealing function in the programming language chosen by the user. Sigillum can be used to simplify the process of developing software with encrypted payloads, ranging from images, to text, to binaries.
 ## How to use
 Sigillum requires a payload the seal and a key to seal it with. If both are provided the standard seal algorithm will be RC4 and the output language will be C. Here follows an example of how to use Sigillum:
+###### Windows
 ```shell
-./main --payload "Sigillum is cool!" --key "secret"
+go run .\bin\main.go --payload "Sigillum is cool!" --key "secret"
 ```
-A path to a file can also be used. Although with some files (like `.png` files or `.jpg` files), the seal can become quite substantial. Therefore it is recommended to use the `-o` switch to directly write the output to a file.
+###### Linux
 ```shell
-./main --payload "~/image.png" --key "secret" -o out.c
+go run ./bin/main.go --payload "Sigillum is cool!" --key "secret"
 ```
-Which will provide a file as output. When a path is provided as the payload, Sigillum will also output the desealing function with the output of that function being a file.
+##### Choosing algorithm
+To choose a specific algorithm for the sealing and desealing process. One can use the `--seal` switch:
+###### Windows
+```shell
+go run .\bin\main.go --payload "Sigillum is cool!" --key "secret" --seal "AES"
+```
+###### Linux
+```shell
+go run ./bin/main.go --payload "Sigillum is cool!" --key "secret" --seal "AES"
+```
+##### Save output
+A path to a file can also be used. Although with some files (like `.png` files or `.jpg` files), the seal can become quite substantial. Therefore it is recommended to use the `--output` switch to directly write the output to a file.
+###### Windows
+```shell
+go run .\bin\main.go  --payload "Sigillum is cool!" --key "secret" --output out.c
+```
+###### Linux
+```shell
+go run ./bin/main.go  --payload "Sigillum is cool!" --key "secret" --output out.c
+```
+##### File as payload
+If you want to use a file as a payload. There's a switch to also name the file once it has been desealed by the desealing algorithm. This switch is 
+Which will provide a file as output. When a path is provided as the payload, Sigillum will also output the desealing function with the output of that function being a file. This can be achieved by using the `--filename` switch:
+###### Windows
+```shell
+go run .\bin\main.go --payload "Sigillum is cool!" --key "secret" --filename "my_image.png"
+```
+###### Linux
+```shell
+go run ./bin/main.go --payload "Sigillum is cool!" --key "secret" --filename "my_image.png"
+```
 ## Installation
 To install Sigillum to your machine simply clone the repository:
 ```shell
