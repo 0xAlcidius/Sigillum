@@ -39,14 +39,14 @@ func main() {
 	key, err := utils.ParseKey(*key_command)
 	kingpin.FatalIfError(err, "Could not parse key")
 
-	encrypt, found := support.SupportedSeals[strings.ToUpper(*seal_command)]
+	seal, found := support.SupportedSeals[strings.ToUpper(*seal_command)]
 
 	if !found {
 		kingpin.Fatalf("Sealing algorithm not supported")
 	}
 
-	ciphertext, err := encrypt(key, payload)
-	kingpin.FatalIfError(err, "Failed to encrypt payload")
+	ciphertext, err := seal.ExecuteSeal(key, payload)
+	kingpin.FatalIfError(err, "Failed to seal payload")
 
 	exportciphertext, found := support.SupportedLanguages[strings.ToUpper(*language_command)]
 

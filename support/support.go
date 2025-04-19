@@ -7,10 +7,10 @@ import (
 )
 
 /* ADD NEWLY SUPPORTED ALGORITHM HERE */
-var SupportedSeals = map[string]func([]byte, []byte) ([]byte, error){
-	"RC4": sealing.RC4CreateSeal,
-	"XOR": sealing.XORCreateSeal,
-	"AES": sealing.AESCreateSeal,
+var SupportedSeals = map[string]sealing.ExecuteSealInterface{
+	"RC4": sealing.RC4Seal{},
+	"XOR": sealing.XORSeal{},
+	"AES": sealing.AESSeal{},
 }
 
 /* ADD NEWLY SUPPORTED PROGRAMMING LANGUAGES HERE */

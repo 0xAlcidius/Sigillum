@@ -9,15 +9,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/0xAlcidius/Sigillum/crypto/sealing"
 	"github.com/0xAlcidius/Sigillum/export"
+	"github.com/0xAlcidius/Sigillum/support"
 )
 
 func TestAESSealingText(t *testing.T) {
 	var language string = "C"
 	filePath := filepath.Join(TEMPDIR, "aes.c")
 
-	ciphertext, err := sealing.AESCreateSeal([]byte(KEY), []byte(PAYLOAD))
+	seal, _ := support.SupportedSeals["AES"]
+
+	ciphertext, err := seal.ExecuteSeal([]byte(KEY), []byte(PAYLOAD))
 
 	if err != nil {
 		t.Error("Error creating ciphertext in AES test. Err:", err)
