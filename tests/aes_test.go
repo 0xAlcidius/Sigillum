@@ -17,7 +17,7 @@ func TestAESSealingText(t *testing.T) {
 	var language string = "C"
 	filePath := filepath.Join(TEMPDIR, "aes.c")
 
-	seal := sigillum.Seals["AES"]
+	seal := sigillum.Seal["AES"]
 
 	ciphertext, err := seal.ExecuteSeal([]byte(KEY), []byte(PAYLOAD))
 
