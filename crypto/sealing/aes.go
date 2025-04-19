@@ -8,9 +8,11 @@ import (
 	"io"
 )
 
+type AESSeal struct{}
+
 const MAXKEYSIZE = 32
 
-func AESCreateSeal(key []byte, payload []byte) ([]byte, error) {
+func (AESSeal) ExecuteSeal(key []byte, payload []byte) ([]byte, error) {
 	paddingLength := 0
 	if len(key) < MAXKEYSIZE {
 		key, paddingLength = addPadding(key, MAXKEYSIZE)

@@ -4,7 +4,9 @@ import (
 	"crypto/rc4"
 )
 
-func RC4CreateSeal(key []byte, shellcode []byte) ([]byte, error) {
+type RC4Seal struct{}
+
+func (RC4Seal) ExecuteSeal(key []byte, shellcode []byte) ([]byte, error) {
 
 	ciphertext, err := createCiphertext(key, shellcode)
 	if err != nil {

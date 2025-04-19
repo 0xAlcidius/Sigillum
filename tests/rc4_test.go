@@ -7,15 +7,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/0xAlcidius/Sigillum/crypto/sealing"
 	"github.com/0xAlcidius/Sigillum/export"
+	"github.com/0xAlcidius/Sigillum/sigillum"
 )
 
 func TestRC4SealingText(t *testing.T) {
 	var language string = "C"
 	filePath := filepath.Join(TEMPDIR, "rc4.c")
 
-	ciphertext, err := sealing.RC4CreateSeal([]byte(KEY), []byte(PAYLOAD))
+	seal := sigillum.Seals["RC4"]
+
+	ciphertext, err := seal.ExecuteSeal([]byte(KEY), []byte(PAYLOAD))
 
 	if err != nil {
 		t.Error("Error creating ciphertext in RC4 test. Err:", err)
@@ -24,7 +26,7 @@ func TestRC4SealingText(t *testing.T) {
 	options := export.CreateExportOptions([]byte(KEY), ciphertext, "RC4", language, filePath, EXPORT_NAME)
 	export.ExportC(options)
 
-	plaintext, err := sealing.RC4CreateSeal([]byte(KEY), ciphertext)
+	plaintext, err := seal.ExecuteSeal([]byte(KEY), ciphertext)
 	if err != nil {
 		t.Error("Error creating plaintext in RC4 test. Err:", err)
 	}

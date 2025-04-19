@@ -7,16 +7,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/0xAlcidius/Sigillum/crypto/sealing"
-
 	"github.com/0xAlcidius/Sigillum/export"
+	"github.com/0xAlcidius/Sigillum/sigillum"
 )
 
 func TestXORSealingText(t *testing.T) {
 	var language string = "C"
 	filePath := filepath.Join(TEMPDIR, "xor.c")
 
-	ciphertext, err := sealing.XORCreateSeal([]byte(KEY), []byte(PAYLOAD))
+	seal := sigillum.Seals["XOR"]
+
+	ciphertext, err := seal.ExecuteSeal([]byte(KEY), []byte(PAYLOAD))
 
 	if err != nil {
 		t.Error("Error creating ciphertext in XOR test. Err:", err)
@@ -25,7 +26,7 @@ func TestXORSealingText(t *testing.T) {
 	options := export.CreateExportOptions([]byte(KEY), ciphertext, "XOR", language, filePath, EXPORT_NAME)
 	export.ExportC(options)
 
-	plaintext, err := sealing.XORCreateSeal([]byte(KEY), ciphertext)
+	plaintext, err := seal.ExecuteSeal([]byte(KEY), ciphertext)
 
 	if err != nil {
 		t.Error("Error creating plaintext in XOR test. Err:", err)

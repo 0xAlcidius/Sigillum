@@ -4,10 +4,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/0xAlcidius/Sigillum/sigillum"
 	"github.com/0xAlcidius/Sigillum/utils"
 
 	"github.com/0xAlcidius/Sigillum/export"
-	"github.com/0xAlcidius/Sigillum/support"
 
 	"github.com/0xAlcidius/Sigillum/crypto/desealing"
 
@@ -39,16 +39,16 @@ func main() {
 	key, err := utils.ParseKey(*key_command)
 	kingpin.FatalIfError(err, "Could not parse key")
 
-	encrypt, found := support.SupportedSeals[strings.ToUpper(*seal_command)]
+	seal, found := sigillum.Seals[strings.ToUpper(*seal_command)]
 
 	if !found {
 		kingpin.Fatalf("Sealing algorithm not supported")
 	}
 
-	ciphertext, err := encrypt(key, payload)
-	kingpin.FatalIfError(err, "Failed to encrypt payload")
+	ciphertext, err := seal.ExecuteSeal(key, payload)
+	kingpin.FatalIfError(err, "Failed to seal payload")
 
-	exportciphertext, found := support.SupportedLanguages[strings.ToUpper(*language_command)]
+	exportciphertext, found := sigillum.Languages[strings.ToUpper(*language_command)]
 
 	if !found {
 		kingpin.Fatalf("Programming language not supported")

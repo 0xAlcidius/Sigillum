@@ -1,2 +1,3 @@
 .vscode
 out.c
+./tests/output/*
