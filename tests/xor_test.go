@@ -15,7 +15,7 @@ func TestXORSealingText(t *testing.T) {
 	var language string = "C"
 	filePath := filepath.Join(TEMPDIR, "xor.c")
 
-	seal := sigillum.Seals["XOR"]
+	seal := sigillum.Seal["XOR"]
 
 	ciphertext, err := seal.ExecuteSeal([]byte(KEY), []byte(PAYLOAD))
 

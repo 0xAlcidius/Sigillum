@@ -39,7 +39,7 @@ func main() {
 	key, err := utils.ParseKey(*key_command)
 	kingpin.FatalIfError(err, "Could not parse key")
 
-	seal, found := sigillum.Seals[strings.ToUpper(*seal_command)]
+	seal, found := sigillum.Seal[strings.ToUpper(*seal_command)]
 
 	if !found {
 		kingpin.Fatalf("Sealing algorithm not supported")
@@ -48,7 +48,7 @@ func main() {
 	ciphertext, err := seal.ExecuteSeal(key, payload)
 	kingpin.FatalIfError(err, "Failed to seal payload")
 
-	exportciphertext, found := sigillum.Languages[strings.ToUpper(*language_command)]
+	exportciphertext, found := sigillum.Language[strings.ToUpper(*language_command)]
 
 	if !found {
 		kingpin.Fatalf("Programming language not supported")

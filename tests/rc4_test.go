@@ -15,7 +15,7 @@ func TestRC4SealingText(t *testing.T) {
 	var language string = "C"
 	filePath := filepath.Join(TEMPDIR, "rc4.c")
 
-	seal := sigillum.Seals["RC4"]
+	seal := sigillum.Seal["RC4"]
 
 	ciphertext, err := seal.ExecuteSeal([]byte(KEY), []byte(PAYLOAD))
 
