@@ -44,6 +44,11 @@ go run ./bin/main.go --payload "Sigillum is cool!" --key "secret" --filename "my
 ### Usage in code
 To implement Sigillum in your own code, first of all make sure your code complies with the CPL license. That said, make sure you have Golang installed. You can use Sigillum as follows:
 ```go
+import (
+	"fmt"
+	"github.com/0xAlcidius/Sigillum/sigillum"
+)
+ 
 func main() {
 	seal, found := sigillum.Seal["RC4"]
 	if !found {
