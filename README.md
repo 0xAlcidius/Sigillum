@@ -42,7 +42,7 @@ go run .\bin\main.go --payload "Sigillum is cool!" --key "secret" --filename "my
 go run ./bin/main.go --payload "Sigillum is cool!" --key "secret" --filename "my_image.png"
 ```
 ### Usage in code
-To implement Sigillum in your own code, first of all make sure your code complies with the CPL license. That said, make sure you have Golang installed. You can use Sigillum as follows:
+To implement Sigillum in your own code, make sure you have Golang installed. You can use Sigillum as follows:
 ```go
 import (
 	"fmt"
@@ -59,7 +59,7 @@ func main() {
 	seal.ExecuteSeal([]byte("secret"), []byte("Sigillum is cool!"))
 }
 ```
-You can change RC4 also for XOR or AES for example.
+You can change "RC4" also for "XOR" or "AES" for example.
 ## Installation
 To install Sigillum to your machine simply clone the repository:
 ```shell
