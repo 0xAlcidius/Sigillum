@@ -47,6 +47,20 @@ To install Sigillum to your machine simply clone the repository:
 git clone <repo.git>
 ```
 Make sure [Golang](https://golang.google.cn/dl/) is installed on your machine
+### Usage in code
+To implement Sigillum in your own code, first of all make sure your code complies with the CPL license. That said, make sure you have Golang installed. You can use Sigillum as follows:
+```go
+func main() {
+	seal, found := sigillum.Seal["RC4"]
+	if !found {
+		fmt.Printf("Seal function not found.")
+		return
+	}
+
+	seal.ExecuteSeal([]byte("secret"), []byte("Sigillum is cool!"))
+}
+```
+You can change RC4 also for XOR or AES for example.
 ## Disclaimer
 This software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, title and non-infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort, or otherwise arising form, out of, or in connection with the software or the use or other dealings in the software.
 ### Security Notice
