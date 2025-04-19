@@ -8,27 +8,28 @@ import (
 	"testing"
 
 	"github.com/0xAlcidius/Sigillum/export"
-	"github.com/0xAlcidius/Sigillum/support"
+	"github.com/0xAlcidius/Sigillum/sigillum"
 )
 
-func TestRC4SealingText(t *testing.T) {
+func TestXORSealingText(t *testing.T) {
 	var language string = "C"
-	filePath := filepath.Join(TEMPDIR, "rc4.c")
+	filePath := filepath.Join(TEMPDIR, "xor.c")
 
-	seal, _ := support.SupportedSeals["RC4"]
+	seal := sigillum.Seals["XOR"]
 
 	ciphertext, err := seal.ExecuteSeal([]byte(KEY), []byte(PAYLOAD))
 
 	if err != nil {
-		t.Error("Error creating ciphertext in RC4 test. Err:", err)
+		t.Error("Error creating ciphertext in XOR test. Err:", err)
 	}
 
-	options := export.CreateExportOptions([]byte(KEY), ciphertext, "RC4", language, filePath, EXPORT_NAME)
+	options := export.CreateExportOptions([]byte(KEY), ciphertext, "XOR", language, filePath, EXPORT_NAME)
 	export.ExportC(options)
 
 	plaintext, err := seal.ExecuteSeal([]byte(KEY), ciphertext)
+
 	if err != nil {
-		t.Error("Error creating plaintext in RC4 test. Err:", err)
+		t.Error("Error creating plaintext in XOR test. Err:", err)
 	}
 
 	if string(plaintext[:len(PAYLOAD)]) != PAYLOAD {
@@ -37,17 +38,17 @@ func TestRC4SealingText(t *testing.T) {
 }
 
 /* To run this test successfully, please make sure gcc is installed on the system this test will be performed on. */
-func TestRC4CompilationC(t *testing.T) {
-	compile := exec.Command("gcc", TEMPDIR+"\\rc4.c", "-o", TEMPDIR+"\\rc4.exe", "-lbcrypt", "-mconsole")
+func TestXORompilationC(t *testing.T) {
+	compile := exec.Command("gcc", TEMPDIR+"\\xor.c", "-o", TEMPDIR+"\\xor.exe", "-lbcrypt", "-mconsole")
 	output, err := compile.CombinedOutput()
 	if err != nil {
-		t.Fatalf("Compilation of RC4 in C failed: %s\nOutput: %s", err, string(output))
+		t.Fatalf("Compilation of XOR in C failed: %s\nOutput: %s", err, string(output))
 	}
 
-	runRc4 := exec.Command(".\\" + TEMPDIR + "\\rc4.exe")
-	output, err = runRc4.CombinedOutput()
+	runXor := exec.Command(".\\" + TEMPDIR + "\\xor.exe")
+	output, err = runXor.CombinedOutput()
 	if err != nil {
-		t.Fatalf("Compilation of RC4 in C failed: %s\nOutput: %s", err, string(output))
+		t.Fatalf("Compilation of XOR in C failed: %s\nOutput: %s", err, string(output))
 	}
 
 	if !strings.Contains(string(output), PAYLOAD) {
