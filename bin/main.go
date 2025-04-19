@@ -9,8 +9,6 @@ import (
 
 	"github.com/0xAlcidius/Sigillum/export"
 
-	"github.com/0xAlcidius/Sigillum/crypto/desealing"
-
 	"github.com/alecthomas/kingpin/v2"
 )
 
@@ -26,7 +24,6 @@ var (
 )
 
 func main() {
-	desealing.GetDesealPath("RC4", "C")
 	var payload []byte
 	_, err := app.Parse(os.Args[1:])
 	kingpin.FatalIfError(err, "Error parsing arguments")
